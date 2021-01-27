@@ -61,7 +61,7 @@ describe('Resource Query', () => {
     ],
   };
 
-  it('none: returns the image without processing it and no placeholder', () => {
+  it('none: returns the image without processing it and no placeholder', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}');`,
@@ -72,10 +72,10 @@ describe('Resource Query', () => {
       const img = window.img.default ? window.img.default : window.img;
       expect(img).to.be.a('string');
       // expect(1).to.be.a('number');
-    });
+    })
   });
 
-  it('?placeholder: returns array of images without processing it, and a placeholder', () => {
+  it('?placeholder: returns array of images without processing it, and a placeholder', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?placeholder');`,
@@ -83,7 +83,7 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
       expect(img).to.be.an('array');
       img.forEach((image, i) => {
@@ -93,10 +93,10 @@ describe('Resource Query', () => {
         validateImgGeneric(img[i]);
         validatePlaceholder(img[i].placeholder);
       });
-    });
+    })
   });
 
-  it('?placeholder: returns the correct ratio for a landscape image', () => {
+  it('?placeholder: returns the correct ratio for a landscape image', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?placeholder');`,
@@ -104,15 +104,15 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
       img.forEach((image) => {
         expect(image.placeholder.ratio).to.be.above(1, 'Aspect ratio for a landscape image should be greater than 1');
       });
-    });
+    })
   });
 
-  it('?placeholder: returns the correct ratio for a portrait image', () => {
+  it('?placeholder: returns the correct ratio for a portrait image', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${TOR_IMG}?placeholder');`,
@@ -120,16 +120,16 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
       img.forEach((image) => {
         expect(image.placeholder.ratio).to.be.above(0, 'Aspect ratio for a portrait image should be greater than 0');
         expect(image.placeholder.ratio).to.be.below(1, 'Aspect ratio for a portrait image should be less than 1');
       });
-    });
+    })
   });
 
-  it('?sizes: returns the resized images, and no placeholder', () => {
+  it('?sizes: returns the resized images, and no placeholder', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?sizes[]=200w&sizes[]=300w');`,
@@ -137,7 +137,7 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
 
       img.forEach((image) => {
@@ -146,10 +146,10 @@ describe('Resource Query', () => {
         validateImgGeneric(image);
         expect(image.placeholder).to.be.undefined();
       });
-    });
+    })
   });
 
-  it('?sizes: accepts the alternate syntax a+b+c', () => {
+  it('?sizes: accepts the alternate syntax a+b+c', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?sizes=200w+300w');`,
@@ -157,7 +157,7 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
       img.forEach((image) => {
         expect(image).to.be.an('object');
@@ -165,10 +165,10 @@ describe('Resource Query', () => {
         validateImgGeneric(image);
         expect(image.placeholder).to.be.undefined();
       });
-    });
+    })
   });
 
-  it('?sizes: size "default" returns the default image, untouched', () => {
+  it('?sizes: size "default" returns the default image, untouched', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?sizes=200w+300w+default');`,
@@ -176,7 +176,7 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
 
       img.forEach((image) => {
@@ -185,10 +185,10 @@ describe('Resource Query', () => {
         validateImgGeneric(image);
         expect(image.placeholder).to.be.undefined();
       });
-    });
+    })
   });
 
-  it('?sizes&placeholder: returns both the resized images, and a placeholder', () => {
+  it('?sizes&placeholder: returns both the resized images, and a placeholder', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?sizes=200w+300w&placeholder');`,
@@ -196,7 +196,7 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
 
       img.forEach((image) => {
@@ -205,10 +205,10 @@ describe('Resource Query', () => {
         validateImgGeneric(image);
         validatePlaceholder(image.placeholder);
       });
-    });
+    })
   });
 
-  it('?lightweight: only returns data which cannot be built during runtime', () => {
+  it('?lightweight: only returns data which cannot be built during runtime', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?placeholder&sizes=200w+300w&lightweight');`,
@@ -216,7 +216,7 @@ describe('Resource Query', () => {
       rule: RULE,
     });
 
-    return runTest(compiler, (window) => {
+    return runTest(compiler, async (window) => {
       const { img } = window;
 
       img.forEach((image) => {
@@ -226,10 +226,10 @@ describe('Resource Query', () => {
         validateImgGeneric(image, true);
         validatePlaceholder(image.placeholder, true);
       });
-    });
+    })
   });
 
-  it('?placeholder=[width]: accepts the placeholder size as value', () => {
+  it('?placeholder=[width]: accepts the placeholder size as value', async () => {
     const compiler = makeCompiler({
       files: {
         'main.js': `window.img = require('${WHALE_IMG}?placeholder=12&lightweight');`,
@@ -267,7 +267,7 @@ describe('Resource Query', () => {
           // }
         }));
       });
-      return Promise.all(promises);
-    });
+      return Promise.all(promises)
+    })
   }).timeout(10000);
 });

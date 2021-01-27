@@ -1,10 +1,11 @@
-import DataUri from 'datauri';
+import DatauriParser from 'datauri/parser';
 import imageSize from 'image-size';
 import getPixels from 'get-pixels';
 import { parseQuery, resizeImage } from './util';
 
 function bufferToDataUri(type, buffer) {
-  return new DataUri().format(type, buffer).content;
+  const parser = new DatauriParser();
+  return parser.format(type, buffer).content;
 }
 
 function getPixelsAsync(shrinkedImageBuffer, type) {

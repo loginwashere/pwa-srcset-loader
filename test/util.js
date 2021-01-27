@@ -99,7 +99,7 @@ export function runTest(compiler, assert) {
           resolve();
         }
         if (result && result.then) {
-          result.then(cleanUp);
+          result.then(cleanUp)
         } else {
           cleanUp();
         }
